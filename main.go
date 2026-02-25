@@ -149,6 +149,11 @@ func main() {
 
 	fmt.Println("Successfully connected to the database")
 
+	// Create tables
+	if err := createTables(db); err != nil {
+		log.Fatalf("Could not create tables: %v", err)
+	}
+
 	// Router
 	r := mux.NewRouter()
 	r.HandleFunc("/health", healthHandler).Methods("GET")
@@ -158,6 +163,17 @@ func main() {
 	// Start server
 	log.Println("Server starting on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", r))
+}
+
+func createTables(db *sql.DB) error {
+	query := `
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(100),
+		email VARCHAR(100) UNIQUE
+	);`
+	_, err := db.Exec(query)
+	return err
 }
 
 func Join(s []string, sep string) []byte {

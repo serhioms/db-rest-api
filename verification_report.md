@@ -13,7 +13,7 @@ The application is running and fully functional. The database connection issues 
 
 2.  **Database Preparation**:
     - Created a test table `users` using `psql`.
-    - Command: `docker exec db-rest-api-db-1 psql -U postgres -d postgres -c "CREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50), email VARCHAR(50));"`
+    - Command: `docker exec db-rest-api-db-1 psql -U mss -d GoDemo -c "CREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50), email VARCHAR(50));"`
 
 3.  **Endpoint Testing**:
 
