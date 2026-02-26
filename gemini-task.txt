@@ -1329,5 +1329,5 @@ to accept connections.
    2. Table Missing: Dropped the table and confirmed the app logs "Creating table
       'users'..." and successfully creates it.
 ============================================================================================================
->
+> Modify '/select' endpoint to return multiple users
 ============================================================================================================
