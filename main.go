@@ -43,7 +43,15 @@ func selectHandler(w http.ResponseWriter, r *http.Request) {
 	where := r.URL.Query().Get("where")
 
 	// Dummy response for now
-	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", from, where)
+	var query string
+	if where == "" {
+		query = fmt.Sprintf("SELECT * FROM %s", from)
+	} else {
+		query = fmt.Sprintf("SELECT * FROM %s WHERE %s", from, where)
+	}
+
+	fmt.Println("query:", query)
+
 	rows, err := db.Query(query)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -127,7 +135,7 @@ func main() {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"))
 
-	fmt.Println("connStr", connStr)
+	fmt.Println("connStr:", connStr)
 
 	var err error
 	for i := 0; i < 10; i++ {
@@ -166,13 +174,27 @@ func main() {
 }
 
 func createTables(db *sql.DB) error {
+	// Check if table exists
+	var exists bool
+	checkQuery := "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users')"
+	err := db.QueryRow(checkQuery).Scan(&exists)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		log.Println("Table 'users' already exists, skipping creation.")
+		return nil
+	}
+
+	log.Println("Creating table 'users'...")
 	query := `
-	CREATE TABLE IF NOT EXISTS users (
+	CREATE TABLE users (
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(100),
 		email VARCHAR(100) UNIQUE
 	);`
-	_, err := db.Exec(query)
+	_, err = db.Exec(query)
 	return err
 }
 
