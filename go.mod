@@ -1,4 +1,4 @@
-module db-rest-api
+module go-rest-crud
 
 go 1.23
 
